@@ -1,3 +1,59 @@
-<h1>
-  {{title}}
-</h1>
+<md-toolbar color="primary">TO-DO List</md-toolbar>
+
+<md-card>
+  <md-card-title>To-do</md-card-title>
+  <md-input-container>
+    <input mdInput 
+           placeholder="Add a to-do"
+           #taskBody 
+           (keyup.enter)="addTask(taskBody.value); taskBody.value=''">
+  </md-input-container>
+  <button md-button
+          (click)="addTask(taskBody.value); taskBody.value=''">Add</button>
+  <br>
+  <button md-raised-button
+          *ngIf="uncompletedTasks.length >= 2"
+          (click)="deleteTasks(uncompletedTasks)">
+    <i class="material-icons md-18">delete</i> DELETE ALL
+  </button>
+  
+  <md-list>
+    <md-list-item *ngFor="let task of uncompletedTasks">
+      <md-checkbox (change)="updateTask(task.key, { completed: !task.completed })"></md-checkbox>
+      <md-input-container>
+        <input mdInput 
+               #newBody
+               value="{{ task.body }}"
+               (keyup.enter)="updateTask(task.key, { body: newBody.value })">
+      </md-input-container>
+      
+      <button md-button 
+              (click)="deleteTask(task.key)">
+        <i class="material-icons md-18">delete</i>
+      </button>
+    </md-list-item>
+  </md-list>
+</md-card>
+
+<md-card *ngIf="completedTasks.length > 0">
+  <md-card-title>Done</md-card-title>
+  <button md-raised-button 
+          *ngIf="completedTasks.length >= 2"
+          (click)="deleteTasks(completedTasks)">
+    <i class="material-icons md-18">delete</i> Clear History
+  </button>
+  <md-list>
+    <md-list-item *ngFor="let task of completedTasks">
+      <md-checkbox [checked]="task.completed"
+                   (change)="updateTask(task.key, { completed: !task.completed })">
+        <span class="lineThrough">
+          {{ task.body }}
+        </span>
+      </md-checkbox>
+      <button md-button
+              (click)="deleteTask(task.key)">
+        <i class="material-icons md-18">delete</i>
+      </button>
+    </md-list-item>
+  </md-list>
+</md-card>
